@@ -1,0 +1,5 @@
+hypothesis,baseline,result,confirmed
+H1_fake_screen_f1,0.904,0.8932584269662921,False
+H2_flat2d_real_errors,34.0,35.0,False
+H3_swinv2_std,0.0348,0.021761676693427424,True
+H4_ensemble_oof_f1,0.9355,0.9252260986053978,False

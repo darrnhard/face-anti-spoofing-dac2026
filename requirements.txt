@@ -1,0 +1,13 @@
+timm
+facenet-pytorch
+scikit-learn
+tqdm
+matplotlib
+pandas
+seaborn
+cleanlab
+imagehash
+hdbscan
+opencv-python
+insightface
+onnxruntime-gpu

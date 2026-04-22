@@ -1,0 +1,57 @@
+# configs/experiments/exp02_v2_four_arch.yaml
+#
+# Experiment: exp02 — v2 Four-Architecture Ensemble
+# Date: 2025-04
+# Status: COMPLETE — models trained, OOF saved
+#
+# Architectures: ConvNeXt-Base | EVA-02-Base | DINOv2-Base | EfficientNet-B4
+# CV Results (Macro F1):
+#   convnext  : 0.8659 ± 0.0331  [0.8274, 0.9087, 0.9023, 0.8450, 0.8460]
+#   eva02     : 0.8815 ± 0.0325  [0.8602, 0.9049, 0.9310, 0.8710, 0.8402]
+#   dinov2    : 0.8958 ± 0.0300  [0.9007, 0.8882, 0.9368, 0.9086, 0.8450]
+#   effnet_b4 : 0.8424 ± 0.0170  [0.8527, 0.8578, 0.8575, 0.8175, 0.8266]
+#
+# Key changes from exp01 (v1):
+#   [FIX]  Backbone/head param split bug fixed for ConvNeXt and ViTs
+#          ConvNeXt head: 83.8M (wrong) → 6.2K params (correct)
+#   [FIX]  Explicit val_transform Resize added (safety measure)
+#   [NEW]  Layer-wise LR decay (LLRD) for EVA-02 and DINOv2
+#   [NEW]  MoirePattern augmentation (SPSC-style, CVPR2024 1st place)
+#   [NEW]  ColorGamutReduction augmentation (print attack simulation)
+#   [NEW]  3-epoch linear LR warmup at start of Stage 2
+#   [NEW]  Gradient clipping max_norm=1.0
+#   [NEW]  EVA-02-Base replaces failed CLIP ViT-B/16
+#   [NEW]  DINOv2-Base added with linear probe pre-training
+#   [CHG]  Focal gamma: 2.0 → 1.0 (preserve signal from small classes)
+#   [CHG]  ConvNeXt batch size: 16 → 64 (enabled by correct LR fix)
+#   [CHG]  ConvNeXt epochs: 50 → 70 (was still improving at ep 50)
+#   [CHG]  Patience: 10 → 15 for all architectures
+#   [CHG]  Scheduler: single cosine → CosineAnnealingWarmRestarts (T0=20)
+#   [REM]  EfficientNetV2-S removed (overlapped with ConvNeXt, low diversity)
+#   [REM]  ResNet-50 removed (overlapped with ConvNeXt, low diversity)
+
+_base_: ../base.yaml    # all other settings inherited from base.yaml
+
+experiment:
+  id: exp02
+  name: v2-four-arch-ensemble
+  description: >
+    Full 5-fold cross-validation training of four architectures:
+    ConvNeXt-Base (IN-22k), EVA-02-Base (MIM+CLIP), DINOv2-Base (with
+    registers + linear probe), and EfficientNet-B4 (380px). Fixed
+    backbone/head split bug, added LLRD for ViTs, new FAS augmentations,
+    LR warmup, and gradient clipping.
+
+architectures_to_train:
+  - convnext
+  - eva02
+  - dinov2
+  - effnet_b4
+
+# Only list DELTAS from base.yaml below
+# (currently all values match base, kept here for explicit record)
+loss:
+  gamma: 1.0    # intentionally kept at 1.0 (delta from possible future base change)
+
+training:
+  warmup_epochs: 3

@@ -1,0 +1,25 @@
+exp_id: exp04
+model_key: dinov2
+fold: 2
+best_epoch: 23
+best_f1: 0.927067
+arch_config:
+  timm_name: vit_base_patch14_reg4_dinov2.lvd142m
+  backbone_lr: 1.0e-05
+  head_lr: 0.001
+  use_llrd: true
+  llrd_factor: 0.8
+  warmup_epochs: 5
+  batch_size: 48
+  img_size: 224
+  epochs: 60
+  freeze_epochs: 10
+  patience: 15
+  probe_epochs: 20
+training:
+  use_cutmix: true
+  warmup_epochs: 5
+  ema_decay: 0.999
+  grad_clip_norm: 1.0
+  loss: focal
+  focal_gamma: 1.0

@@ -1,0 +1,26 @@
+exp_id: exp07
+model_key: eva02
+fold: 0
+best_epoch: 77
+best_f1: 0.933033
+arch_config:
+  timm_name: eva02_base_patch14_224.mim_in22k
+  backbone_lr: 2.0e-05
+  head_lr: 0.0005
+  use_llrd: true
+  llrd_factor: 0.75
+  warmup_epochs: 5
+  batch_size: 48
+  img_size: 224
+  epochs: 90
+  freeze_epochs: 10
+  patience: 15
+training:
+  use_cutmix: true
+  use_sampler: false
+  patch_crop: false
+  warmup_epochs: 5
+  ema_decay: 0.999
+  grad_clip_norm: 1.0
+  loss: focal
+  focal_gamma: 1.0

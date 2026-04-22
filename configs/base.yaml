@@ -1,0 +1,138 @@
+# configs/base.yaml — Global defaults for all FAS experiments
+#
+# This file is the canonical record of ALL hyperparameters used during training.
+# Experiment-specific files in configs/experiments/ only need to list the DELTA
+# from these defaults (the keys that actually change).
+#
+# Note: src/models/registry.py (ARCH_CONFIGS) is the runtime source of truth
+# for architecture hyperparameters. This file mirrors those values for human
+# readability, documentation, and reproducibility auditing.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# General
+# ─────────────────────────────────────────────────────────────────────────────
+seed: 42
+n_folds: 5
+num_classes: 6
+classes:
+  - fake_mannequin
+  - fake_mask
+  - fake_printed
+  - fake_screen
+  - fake_unknown
+  - realperson
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Training loop
+# ─────────────────────────────────────────────────────────────────────────────
+training:
+  use_cutmix: true
+  cutmix_alpha: 1.0       # Beta(1,1) = uniform lambda
+  cutmix_prob: 0.5        # probability of applying CutMix per batch
+  use_sampler: false      # WeightedRandomSampler disabled (focal loss handles imbalance)
+  ema_decay: 0.999        # EMA model decay — used for validation + checkpointing; use_buffers=True
+  grad_clip_norm: 1.0     # gradient clipping max norm (prevents instability on unfreeze)
+  # warmup_epochs is per-architecture (see architectures section); CNNs=3, ViTs=5
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Loss function
+# ─────────────────────────────────────────────────────────────────────────────
+loss:
+  type: focal             # options: focal | poly1
+  gamma: 1.0              # focal focusing parameter (1.0, down from 2.0 in v1)
+                          # gamma=1.0 preserves learning signal from small classes
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Learning rate scheduler
+# ─────────────────────────────────────────────────────────────────────────────
+scheduler:
+  type: cosine_warm_restarts
+  T_0: 20                 # first restart after 20 epochs
+  T_mult: 2               # each subsequent cycle is 2x longer (20 → 40 → 80...)
+  eta_min: 1.0e-7         # minimum LR at the bottom of each cosine cycle
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Augmentation pipeline (train)
+# ─────────────────────────────────────────────────────────────────────────────
+augmentation:
+  hflip_p: 0.5
+  resized_crop_scale_min: 0.8
+  color_jitter:
+    brightness: 0.3
+    contrast: 0.3
+    saturation: 0.3
+    hue: 0.1
+  gaussian_blur_p: 0.2
+  jpeg_compression_p: 0.3
+  jpeg_quality_low: 20        # more aggressive than original 30
+  jpeg_quality_high: 95
+  downscale_upscale_p: 0.2
+  downscale_factor_max: 4     # np.random.randint(2, 5) → effective max is 4 (exclusive upper bound)
+  moire_pattern_p: 0.15       # SPSC-style, CVPR2024 FAS 1st place
+  moire_freq_min: 5
+  moire_freq_max: 40
+  color_gamut_reduction_p: 0.1
+  color_gamut_saturation_min: 0.3
+  color_gamut_saturation_max: 0.7
+  screen_bezel_overlay_p: 0.08
+  screen_bezel_width_min: 5
+  screen_bezel_width_max: 20
+  random_erasing_p: 0.25
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Architecture configs (mirrors src/models/registry.py ARCH_CONFIGS)
+# ─────────────────────────────────────────────────────────────────────────────
+architectures:
+
+  convnext:
+    timm_name: convnext_base.fb_in22k
+    backbone_lr: 5.0e-5   # halved from v1 (bug caused backbone to get 1e-3 via head.norm)
+    head_lr: 5.0e-4
+    use_llrd: true         # stage-wise LLRD over stages.0-3 (matches registry.py)
+    llrd_factor: 0.85      # gentle decay — CNNs need less decay than ViTs
+    warmup_epochs: 3       # CNNs stabilise quickly
+    batch_size: 64         # increased from 16 (correct LR allows larger batch)
+    img_size: 224
+    epochs: 70             # was 50 in v1; still improving at epoch 50
+    freeze_epochs: 5
+    patience: 15
+
+  eva02:
+    timm_name: eva02_base_patch14_224.mim_in22k
+    backbone_lr: 2.0e-5   # conservative — CLIP-initialized ViT needs lower LR
+    head_lr: 5.0e-4
+    use_llrd: true
+    llrd_factor: 0.75      # aggressive decay — EVA-02 transfers well from CLIP+MIM
+    warmup_epochs: 5       # ViTs need longer warmup; attention patterns are fragile
+    batch_size: 48
+    img_size: 224
+    epochs: 60
+    freeze_epochs: 10      # longer Stage 1 for ViT stability
+    patience: 15
+
+  dinov2:
+    timm_name: vit_base_patch14_reg4_dinov2.lvd142m
+    backbone_lr: 1.0e-5   # very conservative — self-supervised features are fragile
+    head_lr: 1.0e-3
+    use_llrd: true
+    llrd_factor: 0.80
+    warmup_epochs: 5       # ViTs need longer warmup; attention patterns are fragile
+    batch_size: 48
+    img_size: 224
+    epochs: 60
+    freeze_epochs: 10
+    patience: 15
+    probe_epochs: 20       # linear probe epochs before full fine-tuning
+
+  effnet_b4:
+    timm_name: efficientnet_b4
+    backbone_lr: 1.0e-4
+    head_lr: 1.0e-3
+    use_llrd: false
+    llrd_factor: null
+    warmup_epochs: 3       # CNNs stabilise quickly
+    batch_size: 24         # 380px input requires smaller batch
+    img_size: 380
+    epochs: 60
+    freeze_epochs: 5
+    patience: 15

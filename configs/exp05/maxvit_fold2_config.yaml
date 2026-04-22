@@ -1,0 +1,26 @@
+exp_id: exp05
+model_key: maxvit
+fold: 2
+best_epoch: 27
+best_f1: 0.483708
+arch_config:
+  timm_name: maxvit_base_tf_224.in21k
+  backbone_lr: 2.0e-05
+  head_lr: 0.0005
+  use_llrd: true
+  llrd_factor: 0.85
+  warmup_epochs: 5
+  batch_size: 32
+  img_size: 224
+  epochs: 60
+  freeze_epochs: 10
+  patience: 15
+training:
+  use_cutmix: true
+  use_sampler: true
+  patch_crop: true
+  warmup_epochs: 5
+  ema_decay: 0.999
+  grad_clip_norm: 1.0
+  loss: focal
+  focal_gamma: 1.0

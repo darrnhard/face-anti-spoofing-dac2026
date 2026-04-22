@@ -1,0 +1,28 @@
+exp_id: exp05
+model_key: fsfm
+fold: 2
+best_epoch: 41
+best_f1: 0.752967
+arch_config:
+  timm_name: vit_base_patch16_224
+  backbone_lr: 2.0e-05
+  head_lr: 0.001
+  use_llrd: true
+  llrd_factor: 0.8
+  warmup_epochs: 5
+  batch_size: 48
+  img_size: 224
+  epochs: 60
+  freeze_epochs: 10
+  patience: 15
+  probe_epochs: 20
+  fsfm_ckpt: /workspace/fas-competition/models/pretrained/fsfm_vit_b.pth
+training:
+  use_cutmix: true
+  use_sampler: true
+  patch_crop: true
+  warmup_epochs: 5
+  ema_decay: 0.999
+  grad_clip_norm: 1.0
+  loss: focal
+  focal_gamma: 1.0

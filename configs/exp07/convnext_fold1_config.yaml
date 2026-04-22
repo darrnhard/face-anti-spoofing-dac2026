@@ -1,0 +1,26 @@
+exp_id: exp07
+model_key: convnext
+fold: 1
+best_epoch: 58
+best_f1: 0.903861
+arch_config:
+  timm_name: convnext_base.fb_in22k
+  backbone_lr: 5.0e-05
+  head_lr: 0.0005
+  use_llrd: true
+  llrd_factor: 0.85
+  warmup_epochs: 3
+  batch_size: 64
+  img_size: 224
+  epochs: 100
+  freeze_epochs: 5
+  patience: 15
+training:
+  use_cutmix: true
+  use_sampler: false
+  patch_crop: false
+  warmup_epochs: 3
+  ema_decay: 0.999
+  grad_clip_norm: 1.0
+  loss: focal
+  focal_gamma: 1.0

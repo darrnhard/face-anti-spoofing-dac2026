@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML/DL Project Structure — Professional Standards</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0f;
+    --surface: #111318;
+    --surface2: #181b22;
+    --border: #1e2230;
+    --border2: #252a38;
+    --accent: #4ade80;
+    --accent2: #22d3ee;
+    --accent3: #f59e0b;
+    --accent4: #e879f9;
+    --accent5: #f87171;
+    --text: #e2e8f0;
+    --text-dim: #7c8591;
+    --text-muted: #4a5568;
+    --glow: rgba(74, 222, 128, 0.12);
+    --glow2: rgba(34, 211, 238, 0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Background grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+
+  /* HEADER */
+  .header {
+    margin-bottom: 64px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 40px;
+  }
+
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-eyebrow::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.05;
+    color: #fff;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--text-dim);
+    max-width: 640px;
+    line-height: 1.8;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 72px;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .badge-green { background: rgba(74,222,128,0.12); color: var(--accent); border: 1px solid rgba(74,222,128,0.2); }
+  .badge-blue  { background: rgba(34,211,238,0.1);  color: var(--accent2); border: 1px solid rgba(34,211,238,0.2); }
+  .badge-amber { background: rgba(245,158,11,0.1);  color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+  .badge-pink  { background: rgba(232,121,249,0.1); color: var(--accent4); border: 1px solid rgba(232,121,249,0.2); }
+  .badge-red   { background: rgba(248,113,113,0.1); color: var(--accent5); border: 1px solid rgba(248,113,113,0.2); }
+
+  .section-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+    padding-left: 0;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border2) 0%, transparent 80%);
+    margin-bottom: 28px;
+  }
+
+  /* CODE BLOCK / TREE */
+  .tree-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .tree-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tree-header .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-r { background: #f87171; }
+  .dot-y { background: #fbbf24; }
+  .dot-g { background: #4ade80; }
+
+  .tree-body {
+    padding: 20px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.85;
+    color: var(--text-dim);
+    overflow-x: auto;
+  }
+
+  .tree-body .d { color: var(--accent2); }       /* directories */
+  .tree-body .f { color: var(--text); }           /* files */
+  .tree-body .c { color: var(--text-muted); }    /* comments */
+  .tree-body .h { color: var(--accent); }         /* highlight */
+  .tree-body .a { color: var(--accent3); }        /* amber highlight */
+  .tree-body .p { color: var(--accent4); }        /* pink highlight */
+
+  /* GRID CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border2); }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .card-body {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.75;
+  }
+
+  .card-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent2);
+    background: rgba(34,211,238,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* NAMING EXAMPLES */
+  .naming-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .naming-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .naming-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .naming-table tr:last-child td { border-bottom: none; }
+  .naming-table .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+  }
+  .naming-table .good { color: var(--accent); }
+  .naming-table .bad  { color: var(--accent5); text-decoration: line-through; opacity: 0.7; }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  /* NOTEBOOK SPLIT VISUAL */
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .pipe-step {
+    flex: 1;
+    min-width: 130px;
+    padding: 18px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pipe-step:not(:last-child) { border-right: none; }
+  .pipe-step:first-child { border-radius: 10px 0 0 10px; }
+  .pipe-step:last-child  { border-radius: 0 10px 10px 0; }
+
+  .pipe-nb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+  .pipe-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+  }
+  .pipe-files {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.7;
+  }
+  .pipe-arrow {
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--border2);
+    z-index: 2;
+  }
+
+  .pipe-step.eda    { border-top: 2px solid var(--accent); }
+  .pipe-step.prep   { border-top: 2px solid var(--accent2); }
+  .pipe-step.model  { border-top: 2px solid var(--accent3); }
+  .pipe-step.eval   { border-top: 2px solid var(--accent4); }
+  .pipe-step.infer  { border-top: 2px solid var(--accent5); }
+
+  /* CALLOUT */
+  .callout {
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .callout-green { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.18); color: #a7f3c0; }
+  .callout-blue  { background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.18); color: #a5f3fc; }
+  .callout-amber { background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.18); color: #fde68a; }
+  .callout-red   { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.18); color: #fca5a5; }
+
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .callout code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(255,255,255,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: inherit;
+  }
+
+  /* TOOL COMPARISON */
+  .tool-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 80px;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .tool-row:last-child { border-bottom: none; }
+  .tool-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent2);
+    font-weight: 600;
+  }
+  .tool-desc { color: var(--text-dim); font-size: 12.5px; line-height: 1.6; }
+  .tool-rec  { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-align: center; padding: 3px 8px; border-radius: 4px; }
+  .rec-must  { background: rgba(74,222,128,0.12); color: var(--accent); border: 1px solid rgba(74,222,128,0.2); }
+  .rec-opt   { background: rgba(245,158,11,0.1);  color: var(--accent3); border: 1px solid rgba(245,158,11,0.2); }
+  .rec-skip  { background: rgba(100,100,100,0.1); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* VERSIONING LADDER */
+  .version-ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .version-tier {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .version-tier:last-child { border-bottom: none; }
+  .vt-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    min-width: 80px;
+    color: var(--text-muted);
+    padding-top: 2px;
+  }
+  .vt-content { flex: 1; }
+  .vt-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .vt-desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.7; }
+  .vt-example {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 6px;
+    background: rgba(74,222,128,0.05);
+    padding: 6px 10px;
+    border-radius: 5px;
+    border-left: 2px solid rgba(74,222,128,0.3);
+  }
+
+  /* APPLIED SECTION */
+  .applied-block {
+    background: linear-gradient(135deg, rgba(74,222,128,0.04) 0%, rgba(34,211,238,0.04) 100%);
+    border: 1px solid rgba(74,222,128,0.15);
+    border-radius: 12px;
+    padding: 28px 28px;
+    margin-bottom: 24px;
+  }
+
+  .applied-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .applied-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+
+  /* TOC */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 48px;
+  }
+  .toc-item {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 12px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .toc-item:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* HR */
+  .section-hr {
+    margin: 56px 0 0;
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  pre { white-space: pre; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-eyebrow">Professional ML/DL Development Standards</div>
+    <h1>The Expert's Guide to<br><span>ML Project Structure</span></h1>
+    <p class="header-sub">
+      A deep research synthesis of professional standards used by Kaggle grandmasters, ML engineers, and research teams — covering directory layout, file naming, iteration versioning, and notebook splitting strategy. Applied to your FAS competition codebase.
+    </p>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <a class="toc-item" href="#s1">§1 Directory Structure</a>
+    <a class="toc-item" href="#s2">§2 File Naming Convention</a>
+    <a class="toc-item" href="#s3">§3 Notebook Splitting</a>
+    <a class="toc-item" href="#s4">§4 Iteration Versioning</a>
+    <a class="toc-item" href="#s5">§5 Experiment Tracking</a>
+    <a class="toc-item" href="#s6">§6 Scripts vs. Notebooks</a>
+    <a class="toc-item" href="#s7">§7 Applied — FAS Template</a>
+  </div>
+
+  <!-- ══════════════════════════════════ §1 DIRECTORY STRUCTURE ══════════════════════════════════ -->
+  <div class="section" id="s1">
+    <div class="section-label">Section 01</div>
+    <div class="section-title">
+      Directory Structure
+      <span class="badge badge-green">Cookiecutter DS Standard</span>
+    </div>
+    <p class="section-desc">
+      The gold standard is <strong>Cookiecutter Data Science</strong> (CCDS) by DrivenData — adopted by Kaggle grandmasters, academic research groups, and production ML teams. The core principle: separate <em>exploration code</em> (notebooks) from <em>reusable code</em> (src/), and treat data as immutable at source.
+    </p>
+    <div class="divider"></div>
+
+    <div class="tree-block">
+      <div class="tree-header">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>fas-competition/  ← Professional CCDS-based layout</span>
+      </div>
+      <div class="tree-body"><pre>
+<span class="d">fas-competition/</span>
+│
+├── <span class="h">README.md</span>                        <span class="c"># Project overview, setup, experiment log summary</span>
+├── <span class="h">Makefile</span>                         <span class="c"># make preprocess / make train / make submit</span>
+├── <span class="h">pyproject.toml</span>                   <span class="c"># Dependencies (uv or pip-tools managed)</span>
+├── .gitignore
+│
+├── <span class="d">data/</span>                            <span class="c"># NEVER commit raw data — gitignore data/</span>
+│   ├── <span class="d">raw/</span>                         <span class="c"># Original, immutable competition data dump</span>
+│   ├── <span class="d">interim/</span>                     <span class="c"># Intermediate transformations (face crops, etc.)</span>
+│   ├── <span class="d">processed/</span>                   <span class="c"># Final model-ready data (augmented, split)</span>
+│   └── <span class="d">external/</span>                    <span class="c"># 3rd-party data (CelebA-Spoof, NUAA, etc.)</span>
+│
+├── <span class="d">notebooks/</span>                       <span class="c"># Exploration + PoC only — NOT the source of truth</span>
+│   ├── <span class="d">eda/</span>
+│   │   └── <span class="f">01-eda-class-distribution.ipynb</span>
+│   ├── <span class="d">experiments/</span>                 <span class="c"># One notebook per experiment attempt</span>
+│   │   ├── <span class="f">exp01-autogluon-baseline.ipynb</span>
+│   │   ├── <span class="f">exp02-efficientnet-b0.ipynb</span>
+│   │   └── <span class="f">exp03-efficientnet-b4-mixup.ipynb</span>
+│   └── <span class="d">scratch/</span>                     <span class="c"># Throwaway prototyping — don't clean up</span>
+│       └── <span class="f">scratch-debug-augmentation.ipynb</span>
+│
+├── <span class="d">src/</span>  <span class="c">(or your package name e.g. fas/)</span>   <span class="c"># THE REUSABLE CODE — the source of truth</span>
+│   ├── <span class="f">__init__.py</span>
+│   ├── <span class="d">data/</span>
+│   │   ├── <span class="f">dataset.py</span>               <span class="c"># PyTorch Dataset classes</span>
+│   │   ├── <span class="f">augmentation.py</span>          <span class="c"># Albumentations / torchvision transforms</span>
+│   │   └── <span class="f">preprocessing.py</span>         <span class="c"># Face detection, cropping pipeline</span>
+│   ├── <span class="d">models/</span>
+│   │   ├── <span class="f">efficientnet.py</span>          <span class="c"># Model definitions / wrappers</span>
+│   │   ├── <span class="f">autogluon_wrapper.py</span>
+│   │   └── <span class="f">ensemble.py</span>              <span class="c"># Blending / stacking logic</span>
+│   ├── <span class="d">training/</span>
+│   │   ├── <span class="f">train.py</span>                 <span class="c"># Main training loop / Lightning module</span>
+│   │   ├── <span class="f">losses.py</span>
+│   │   └── <span class="f">metrics.py</span>               <span class="c"># ACER, APCER, BPCER for FAS</span>
+│   └── <span class="d">utils/</span>
+│       ├── <span class="f">config.py</span>                <span class="c"># Global paths, constants</span>
+│       ├── <span class="f">seed.py</span>                  <span class="c"># set_seed() utility</span>
+│       └── <span class="f">logger.py</span>
+│
+├── <span class="d">scripts/</span>                         <span class="c"># CLI-runnable entry points</span>
+│   ├── <span class="f">preprocess.py</span>                <span class="c"># python scripts/preprocess.py</span>
+│   ├── <span class="f">train.py</span>                     <span class="c"># python scripts/train.py --config exp03</span>
+│   ├── <span class="f">evaluate.py</span>
+│   └── <span class="f">predict.py</span>                   <span class="c"># generates submission.csv</span>
+│
+├── <span class="d">configs/</span>                         <span class="c"># Hydra / YAML experiment configs — version controlled</span>
+│   ├── <span class="f">base.yaml</span>                    <span class="c"># Default hyperparameters</span>
+│   └── <span class="d">experiments/</span>
+│       ├── <span class="f">exp01_autogluon.yaml</span>
+│       ├── <span class="f">exp02_effnet_b0.yaml</span>
+│       └── <span class="f">exp03_effnet_b4_mixup.yaml</span>
+│
+├── <span class="d">models/</span>                          <span class="c"># Saved checkpoints (gitignored, large files)</span>
+│   ├── <span class="d">exp02_effnet_b0/</span>
+│   │   ├── <span class="f">best_val_auc0.934.ckpt</span>
+│   │   └── <span class="f">config_snapshot.yaml</span>     <span class="c"># Config at time of save — CRITICAL</span>
+│   └── <span class="d">exp03_effnet_b4_mixup/</span>
+│       └── <span class="f">best_val_auc0.951.ckpt</span>
+│
+├── <span class="d">submissions/</span>                     <span class="c"># All generated submission CSVs</span>
+│   ├── <span class="f">sub_exp02_lb0.891.csv</span>
+│   └── <span class="f">sub_exp03_lb0.904.csv</span>
+│
+├── <span class="d">reports/</span>                         <span class="c"># Generated analysis, figures, notes</span>
+│   ├── <span class="d">figures/</span>
+│   └── <span class="f">experiment_log.md</span>            <span class="c"># Manual log: what changed, CV score, LB score</span>
+│
+└── <span class="d">references/</span>                      <span class="c"># Papers, competition rules, data docs</span>
+      </pre></div>
+    </div>
+
+    <div class="callout callout-amber">
+      <span class="callout-icon">⚡</span>
+      <span><strong>Key principle (CCDS):</strong> <code>data/raw/</code> is the immutable truth. Never overwrite it. All transformations write to <code>data/interim/</code> or <code>data/processed/</code>. Scripts in <code>src/</code> are the source of truth — not notebooks. Notebooks are for exploration, scripts are for reproducibility.</span>
+    </div>
+
+    <div class="callout callout-blue">
+      <span class="callout-icon">💡</span>
+      <span><strong>For solo Kaggle use</strong>, you can drop <code>docs/</code>, <code>references/</code>, and <code>Makefile</code> initially. The non-negotiables are: <code>data/raw</code>, <code>src/</code>, <code>configs/</code>, <code>notebooks/experiments/</code>, and <code>submissions/</code>.</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ §2 FILE NAMING ══════════════════════════════════ -->
+  <hr class="section-hr">
+  <div class="section" id="s2" style="margin-top:48px">
+    <div class="section-label">Section 02</div>
+    <div class="section-title">
+      File Naming Conventions
+      <span class="badge badge-blue">Industry Standard</span>
+    </div>
+    <p class="section-desc">Consistent naming is not aesthetic preference — it's what lets you parse 50 files instantly without opening them. Different file types have different conventions.</p>
+    <div class="divider"></div>
+
+    <!-- NOTEBOOKS -->
+    <div style="margin-bottom:20px">
+      <div class="section-title" style="font-size:15px; margin-bottom:12px">📓 Notebooks</div>
+      <div class="table-wrap">
+        <table class="naming-table">
+          <tr><th>Pattern</th><th>Example</th><th>Notes</th></tr>
+          <tr>
+            <td class="mono">[stage]-[desc].ipynb</td>
+            <td class="mono good">01-eda-class-balance.ipynb</td>
+            <td class="tool-desc">Cookiecutter DS standard. Stage # controls ordering. Dash-delimited, lowercase.</td>
+          </tr>
+          <tr>
+            <td class="mono">[expNN]-[model]-[tweak].ipynb</td>
+            <td class="mono good">exp03-effnet-b4-mixup.ipynb</td>
+            <td class="tool-desc">For experiment notebooks. Zero-padded number ensures sorting. Use <code>exp</code> prefix to immediately distinguish from EDA.</td>
+          </tr>
+          <tr>
+            <td class="mono">scratch-[desc].ipynb</td>
+            <td class="mono good">scratch-debug-augment.ipynb</td>
+            <td class="tool-desc">Throwaway code. <code>scratch-</code> prefix = "don't clean this up"</td>
+          </tr>
+          <tr>
+            <td class="mono">[anything]-v2.ipynb</td>
+            <td class="mono bad">notebook_v2_final_FINAL.ipynb</td>
+            <td class="tool-desc"><strong>Anti-pattern.</strong> Version suffixes on notebooks are a red flag — use Git commits or experiment numbering instead.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <div style="margin-bottom:20px">
+      <div class="section-title" style="font-size:15px; margin-bottom:12px">🐍 Python Source Files (src/)</div>
+      <div class="table-wrap">
+        <table class="naming-table">
+          <tr><th>Pattern</th><th>Example</th><th>Notes</th></tr>
+          <tr>
+            <td class="mono">snake_case.py</td>
+            <td class="mono good">face_dataset.py</td>
+            <td class="tool-desc">Always snake_case for Python files. PEP 8 standard.</td>
+          </tr>
+          <tr>
+            <td class="mono">[function]_[noun].py</td>
+            <td class="mono good">augmentation_factory.py</td>
+            <td class="tool-desc">Name files after what they contain: a factory, a dataset, a trainer.</td>
+          </tr>
+          <tr>
+            <td class="mono">train.py / predict.py</td>
+            <td class="mono good">train.py, evaluate.py, predict.py</td>
+            <td class="tool-desc">CLI scripts use action verbs. Run as <code>python scripts/train.py</code>.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONFIGS -->
+    <div style="margin-bottom:20px">
+      <div class="section-title" style="font-size:15px; margin-bottom:12px">⚙️ Config Files (configs/)</div>
+      <div class="table-wrap">
+        <table class="naming-table">
+          <tr><th>Pattern</th><th>Example</th><th>Notes</th></tr>
+          <tr>
+            <td class="mono">base.yaml</td>
+            <td class="mono good">base.yaml</td>
+            <td class="tool-desc">Default hyperparameters. All experiments override from here.</td>
+          </tr>
+          <tr>
+            <td class="mono">[expNN]_[model]_[tweak].yaml</td>
+            <td class="mono good">exp03_effnet_b4_mixup.yaml</td>
+            <td class="tool-desc">Matches the experiment notebook name. YAML only stores the <em>delta</em> from base.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- CHECKPOINTS -->
+    <div style="margin-bottom:20px">
+      <div class="section-title" style="font-size:15px; margin-bottom:12px">💾 Model Checkpoints</div>
+      <div class="table-wrap">
+        <table class="naming-table">
+          <tr><th>Pattern</th><th>Example</th><th>Notes</th></tr>
+          <tr>
+            <td class="mono">best_[metric][score].ckpt</td>
+            <td class="mono good">best_val_auc0.951.ckpt</td>
+            <td class="tool-desc">Best checkpoint uses metric + score. Instantly scannable without opening.</td>
+          </tr>
+          <tr>
+            <td class="mono">epoch=[N]-step=[N].ckpt</td>
+            <td class="mono good">epoch=12-step=2340.ckpt</td>
+            <td class="tool-desc">PyTorch Lightning default — good for resume training checkpoints.</td>
+          </tr>
+          <tr>
+            <td class="mono">[expNN]/best_*.ckpt</td>
+            <td class="mono good">exp03_effnet_b4_mixup/best_val_auc0.951.ckpt</td>
+            <td class="tool-desc">Always nest checkpoints inside an experiment-named folder. ALWAYS save a <code>config_snapshot.yaml</code> alongside.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUBMISSIONS -->
+    <div style="margin-bottom:20px">
+      <div class="section-title" style="font-size:15px; margin-bottom:12px">📤 Submissions</div>
+      <div class="table-wrap">
+        <table class="naming-table">
+          <tr><th>Pattern</th><th>Example</th><th>Notes</th></tr>
+          <tr>
+            <td class="mono">sub_[exp]_cv[score]_lb[score].csv</td>
+            <td class="mono good">sub_exp03_cv0.951_lb0.904.csv</td>
+            <td class="tool-desc">The best naming scheme. Shows exactly which experiment, CV score, and LB score at a glance.</td>
+          </tr>
+          <tr>
+            <td class="mono">sub_[date]_[exp].csv</td>
+            <td class="mono good">sub_20250402_exp03.csv</td>
+            <td class="tool-desc">Alternative if you make multiple submissions per day.</td>
+          </tr>
+          <tr>
+            <td class="mono">submission.csv / sub_final.csv</td>
+            <td class="mono bad">submission_v3_BEST.csv</td>
+            <td class="tool-desc"><strong>Anti-pattern.</strong> You'll have 20 files and won't know which is which in 2 weeks.</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <span class="callout-icon">✅</span>
+      <span><strong>Master rule:</strong> A filename should answer <em>"what is this and how good was it?"</em> without opening the file. <code>sub_exp03_cv0.951_lb0.904.csv</code> answers that completely. <code>submission_final2.csv</code> answers nothing.</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ §3 NOTEBOOK SPLITTING ══════════════════════════════════ -->
+  <hr class="section-hr">
+  <div class="section" id="s3" style="margin-top:48px">
+    <div class="section-label">Section 03</div>
+    <div class="section-title">
+      Notebook Splitting Strategy
+      <span class="badge badge-amber">Pipeline Separation</span>
+    </div>
+    <p class="section-desc">
+      Professional Kaggle competitors (including Silver/Gold medalists) never run everything in one notebook. Each pipeline stage becomes its own notebook. This way: if preprocessing takes 7 hours, you only run it once — and the notebook becomes a cached artifact.
+    </p>
+    <div class="divider"></div>
+
+    <!-- PIPELINE VISUAL -->
+    <div class="pipeline">
+      <div class="pipe-step eda">
+        <div class="pipe-nb">NB 00</div>
+        <div class="pipe-name">EDA</div>
+        <div class="pipe-files">
+          01-eda-class-dist.ipynb<br>
+          02-eda-sample-viz.ipynb
+        </div>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step prep">
+        <div class="pipe-nb">NB 01</div>
+        <div class="pipe-name">Preprocessing</div>
+        <div class="pipe-files">
+          03-preprocess-crops.ipynb<br>
+          <em style="opacity:0.5">→ saves to data/processed/</em>
+        </div>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step model">
+        <div class="pipe-nb">NB 02</div>
+        <div class="pipe-name">Training</div>
+        <div class="pipe-files">
+          exp01-autogluon.ipynb<br>
+          exp02-effnet-b0.ipynb<br>
+          exp03-effnet-b4.ipynb
+        </div>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step eval">
+        <div class="pipe-nb">NB 03</div>
+        <div class="pipe-name">Evaluation</div>
+        <div class="pipe-files">
+          04-eval-compare.ipynb<br>
+          05-error-analysis.ipynb
+        </div>
+        <div class="pipe-arrow">›</div>
+      </div>
+      <div class="pipe-step infer">
+        <div class="pipe-nb">NB 04</div>
+        <div class="pipe-name">Inference</div>
+        <div class="pipe-files">
+          06-inference-submit.ipynb<br>
+          <em style="opacity:0.5">→ saves to submissions/</em>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-grid" style="margin-top:20px">
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🔬</span> EDA Notebooks</div>
+        <div class="card-body">
+          Run once, rarely modified. Keep analysis self-contained. Prefix: <code>01-eda-</code>. Output is insight, not data. Use markdown cells heavily — this is documentation.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">⚙️</span> Preprocessing Notebooks</div>
+        <div class="card-body">
+          The "expensive" stage. Runs once, caches output to <code>data/processed/</code>. Almost never re-run. If your preprocessing takes &gt;30min, this split is non-negotiable. Prefix: <code>02-preprocess-</code>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🧪</span> Experiment Notebooks</div>
+        <div class="card-body">
+          <strong>One notebook per experiment.</strong> Each loads from <code>data/processed/</code>, trains, logs metrics, saves checkpoint. Prefix: <code>exp01-</code>, <code>exp02-</code>. Sequential numbering = chronological history.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📊</span> Eval / Analysis Notebooks</div>
+        <div class="card-body">
+          Load multiple trained models, compare metrics, plot confusion matrix, identify failure modes. Prefix: <code>04-eval-</code>. Helps decide the next experiment direction.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">📤</span> Inference Notebooks</div>
+        <div class="card-body">
+          Load the best checkpoint, run on test set, generate submission. Prefix: <code>05-infer-</code>. Keep this notebook clean and simple — it's your submission machine. Separating it prevents accidental re-training.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">🗑️</span> Scratch Notebooks</div>
+        <div class="card-body">
+          Throwaway prototyping only. Keep in <code>notebooks/scratch/</code>. Never number these — they're not part of the pipeline. Prefix: <code>scratch-</code>. Delete freely.
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-blue">
+      <span class="callout-icon">💡</span>
+      <span><strong>Kaggle grandmaster tip (from TDS article by Ibrahim Habib, Silver Medal NeurIPS 2025):</strong> "Separating each step in the pipeline (e.g. data preprocessing, training, inference) into its own notebook is useful when one step takes a long time to run and rarely changes. My preprocessing step took more than seven hours to run."</span>
+    </div>
+
+    <div class="callout callout-amber">
+      <span class="callout-icon">⚠️</span>
+      <span><strong>The module import trick:</strong> Add this to the top of every notebook so you can import from <code>src/</code>:
+      <br><br><code>import sys, os; sys.path.insert(0, os.path.abspath('../'))</code><br><code>from src.data.dataset import FASDataset</code><br><br>
+      This means you write your class once in <code>src/</code> and reuse it in all notebooks.</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ §4 VERSIONING ══════════════════════════════════ -->
+  <hr class="section-hr">
+  <div class="section" id="s4" style="margin-top:48px">
+    <div class="section-label">Section 04</div>
+    <div class="section-title">
+      Iteration Versioning
+      <span class="badge badge-pink">Git + Experiment Tracking</span>
+    </div>
+    <p class="section-desc">
+      Professional teams use a <strong>two-level versioning system</strong>: Git for code versions, and experiment tracking (MLflow / W&amp;B / CSV log) for run/result versions. These serve different purposes and must not be conflated.
+    </p>
+    <div class="divider"></div>
+
+    <div class="version-ladder">
+      <div class="version-tier">
+        <div class="vt-label">LEVEL 1<br><span style="color:var(--accent)">Code</span></div>
+        <div class="vt-content">
+          <div class="vt-title">Git Commits — The Source of Truth</div>
+          <div class="vt-desc">Every meaningful change gets committed. Commit messages follow a pattern. When a Kaggle submission is made, tag the commit with the LB score. This lets you <em>time-travel</em> to any previous model exactly.</div>
+          <div class="vt-example">
+git commit -m "exp03: add MixUp augmentation, EfficientNet-B4"<br>
+git commit -m "fix: correct label leak in validation split"<br>
+git tag "lb-0.904-exp03" HEAD
+          </div>
+        </div>
+      </div>
+      <div class="version-tier">
+        <div class="vt-label">LEVEL 2<br><span style="color:var(--accent2)">Experiments</span></div>
+        <div class="vt-content">
+          <div class="vt-title">Experiment IDs — Sequential, Never Overwritten</div>
+          <div class="vt-desc">Each training run gets a sequential ID: <code>exp01</code>, <code>exp02</code>, etc. The experiment log records what changed. <strong>Never delete or overwrite an experiment</strong> — even bad ones are informative. The log is a lab notebook.</div>
+          <div class="vt-example">
+# experiment_log.md
+| ID    | Model         | Augment       | CV ACER  | LB ACER  | Notes                  |
+|-------|---------------|---------------|----------|----------|------------------------|
+| exp01 | AutoGluon MM  | default       | 0.142    | 0.189    | Baseline AutoML        |
+| exp02 | EfficientB0   | flip+crop     | 0.091    | 0.109    | Custom PyTorch         |
+| exp03 | EfficientB4   | +MixUp        | 0.049    | 0.096    | Best so far ✓          |
+          </div>
+        </div>
+      </div>
+      <div class="version-tier">
+        <div class="vt-label">LEVEL 3<br><span style="color:var(--accent3)">Configs</span></div>
+        <div class="vt-content">
+          <div class="vt-title">YAML Configs — Hyperparameter Snapshots</div>
+          <div class="vt-desc">Every experiment has a YAML config that fully specifies it. The config is version-controlled with Git. The checkpoint folder always contains a frozen copy of the config at time of training. This is what makes results reproducible 6 months later.</div>
+          <div class="vt-example">
+# configs/experiments/exp03_effnet_b4_mixup.yaml
+_base_: ../base.yaml
+model:
+  name: efficientnet_b4
+  pretrained: true
+training:
+  epochs: 30
+  lr: 1e-4
+  batch_size: 32
+augmentation:
+  mixup_alpha: 0.4
+  use_cutmix: true
+          </div>
+        </div>
+      </div>
+      <div class="version-tier">
+        <div class="vt-label">LEVEL 4<br><span style="color:var(--accent4)">Checkpoints</span></div>
+        <div class="vt-content">
+          <div class="vt-title">Model Checkpoints — Named by Metric Score</div>
+          <div class="vt-desc">Checkpoints are saved in an experiment-named folder. The <em>best</em> checkpoint includes the validation metric in its name. A config snapshot lives beside it. This way, if you have 10 experiments, you immediately know which folder holds your best model.</div>
+          <div class="vt-example">
+models/
+├── exp02_effnet_b0/
+│   ├── best_val_auc0.934.ckpt
+│   └── config_snapshot.yaml
+└── exp03_effnet_b4_mixup/
+    ├── best_val_auc0.951.ckpt   ← Best model at a glance
+    └── config_snapshot.yaml     ← Reproducibility key
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-red">
+      <span class="callout-icon">🚫</span>
+      <span><strong>Anti-patterns to eliminate from your codebase now:</strong> <code>model_v2.ckpt</code>, <code>model_final.ckpt</code>, <code>model_new.ckpt</code>, <code>train_copy.py</code>, <code>notebook_FINAL_v3.ipynb</code>. These will haunt you. Use experiment IDs + metric scores instead — they are self-describing.</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ §5 EXPERIMENT TRACKING ══════════════════════════════════ -->
+  <hr class="section-hr">
+  <div class="section" id="s5" style="margin-top:48px">
+    <div class="section-label">Section 05</div>
+    <div class="section-title">
+      Experiment Tracking Tools
+      <span class="badge badge-red">Tooling</span>
+    </div>
+    <p class="section-desc">You need to track: hyperparameters, metrics per epoch, code version (git hash), artifacts. Tool choice depends on your complexity level.</p>
+    <div class="divider"></div>
+
+    <div class="table-wrap">
+      <div class="tool-row" style="background:var(--surface2)">
+        <div class="tool-name">W&B (wandb)</div>
+        <div class="tool-desc">The industry favorite for DL research. Logs metrics, gradients, images, model topology. Beautiful dashboards. Free for personal use. Integrates with PyTorch, Lightning, Keras in ~3 lines. <strong>Best choice for your FAS project.</strong></div>
+        <div class="tool-rec rec-must">RECOMMENDED</div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-name">MLflow</div>
+        <div class="tool-desc">Open-source, self-hosted, no account needed. Tracks params, metrics, artifacts. Slightly more setup. Good for offline/private work or when you don't want cloud dependency.</div>
+        <div class="tool-rec rec-opt">OPTIONAL</div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-name">experiment_log.md</div>
+        <div class="tool-desc">A simple markdown table in your repo. Manual, but zero-friction. Even if you use W&B, keep a brief manual log for high-level notes ("this failed because of X"). The human-readable audit trail.</div>
+        <div class="tool-rec rec-must">ALWAYS DO</div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-name">Hydra (configs)</div>
+        <div class="tool-desc">Facebook Research config management. Composes YAML configs, sweeps hyperparameters from CLI, logs configs per run automatically. Used by the PyTorch Lightning community template (lightning-hydra-template on GitHub).</div>
+        <div class="tool-rec rec-opt">OPTIONAL</div>
+      </div>
+      <div class="tool-row">
+        <div class="tool-name">DVC</div>
+        <div class="tool-desc">Git for large files (data + model checkpoints). Versions your datasets alongside your code. Overkill for solo Kaggle, essential for team or production ML. Use if your data changes across experiments.</div>
+        <div class="tool-rec rec-skip">LATER</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <span class="callout-icon">✅</span>
+      <span><strong>Minimum viable tracking setup for FAS competition:</strong> W&B for live metric logging + <code>experiment_log.md</code> for high-level decisions + Git tags on submission commits. That's 90% of the value with 10% of the complexity.</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ §6 SCRIPTS VS NOTEBOOKS ══════════════════════════════════ -->
+  <hr class="section-hr">
+  <div class="section" id="s6" style="margin-top:48px">
+    <div class="section-label">Section 06</div>
+    <div class="section-title">
+      The Scripts vs Notebooks Philosophy
+      <span class="badge badge-green">Core Principle</span>
+    </div>
+    <p class="section-desc">The most important professional principle in ML engineering. Professionals treat notebooks and scripts as fundamentally different tools with non-overlapping roles.</p>
+    <div class="divider"></div>
+
+    <div class="card-grid">
+      <div class="card" style="border-top: 2px solid var(--accent2)">
+        <div class="card-title" style="color:var(--accent2)">📓 Notebooks are for...</div>
+        <div class="card-body">
+          <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px">
+            <li>Exploratory Data Analysis (EDA)</li>
+            <li>Quickly prototyping a new idea</li>
+            <li>Visualizing results and errors</li>
+            <li>Creating figures for reports</li>
+            <li>Running a single experiment interactively</li>
+            <li>Communication (markdown-heavy)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="border-top: 2px solid var(--accent)">
+        <div class="card-title" style="color:var(--accent)">🐍 Scripts (src/) are for...</div>
+        <div class="card-body">
+          <ul style="padding-left:18px; display:flex; flex-direction:column; gap:6px">
+            <li>Reusable Dataset / DataModule classes</li>
+            <li>Model architecture definitions</li>
+            <li>Training/evaluation loops</li>
+            <li>Loss functions and metrics</li>
+            <li>Any code used in 2+ notebooks</li>
+            <li>Reproducible pipeline execution</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-amber" style="margin-top:8px">
+      <span class="callout-icon">🔄</span>
+      <span><strong>The refactoring workflow:</strong> Start in a notebook → prototype works → extract the reusable function/class to <code>src/</code> → import it back into the notebook. This is the professional loop. The notebook becomes thin; <code>src/</code> becomes the real codebase. When a bug is found in <code>src/dataset.py</code>, it's fixed once and all notebooks that import it are immediately fixed too.</span>
+    </div>
+
+    <div class="callout callout-red">
+      <span class="callout-icon">🚫</span>
+      <span><strong>The classic mistake:</strong> Copying the same preprocessing block across 5 different experiment notebooks. When a bug is found, you fix it 5 times (or miss some). This is exactly what happens when the codebase grows without structure. The fix is extracting to <code>src/data/preprocessing.py</code>.</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ §7 APPLIED — FAS ══════════════════════════════════ -->
+  <hr class="section-hr">
+  <div class="section" id="s7" style="margin-top:48px">
+    <div class="section-label">Section 07</div>
+    <div class="section-title">
+      Applied: Your FAS Competition Structure
+      <span class="badge badge-amber">Specific Template</span>
+    </div>
+    <p class="section-desc">Here is the exact restructured layout for your Face Anti-Spoofing competition, following all the above principles and adapted to your AutoGluon → EfficientNet → custom PyTorch phased strategy.</p>
+    <div class="divider"></div>
+
+    <div class="applied-block">
+      <div class="applied-title">🎯 Restructure Plan</div>
+      <div class="applied-sub">Based on your phased approach: AutoGluon AutoMM → EfficientNet → custom PyTorch</div>
+
+      <div class="tree-block" style="margin-bottom:16px">
+        <div class="tree-header">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span>fas-competition/ — Cleaned &amp; Restructured</span>
+        </div>
+        <div class="tree-body"><pre>
+<span class="d">fas-competition/</span>
+│
+├── <span class="h">README.md</span>
+├── <span class="h">experiment_log.md</span>              <span class="c"># Your living lab notebook — update every experiment</span>
+├── pyproject.toml / requirements.txt
+├── .gitignore                         <span class="c"># include: data/, models/, submissions/, __pycache__</span>
+│
+├── <span class="d">data/</span>
+│   ├── <span class="d">raw/</span>                         <span class="c"># Original competition images — NEVER touch</span>
+│   ├── <span class="d">interim/</span>                     <span class="c"># Face crops, normalized images</span>
+│   └── <span class="d">processed/</span>                   <span class="c"># Train/val splits as .pkl or folder structure</span>
+│
+├── <span class="d">notebooks/</span>
+│   ├── <span class="d">eda/</span>
+│   │   ├── <span class="f">01-eda-class-distribution.ipynb</span>
+│   │   └── <span class="f">02-eda-sample-visualization.ipynb</span>
+│   ├── <span class="d">preprocessing/</span>
+│   │   └── <span class="f">03-preprocess-face-crop.ipynb</span>   <span class="c"># Run once, saves to data/processed/</span>
+│   ├── <span class="d">experiments/</span>
+│   │   ├── <span class="f">exp01-autogluon-automm-baseline.ipynb</span>
+│   │   ├── <span class="f">exp02-efficientnet-b0-default-aug.ipynb</span>
+│   │   ├── <span class="f">exp03-efficientnet-b4-mixup.ipynb</span>
+│   │   └── <span class="f">exp04-ensemble-exp02-exp03.ipynb</span>
+│   ├── <span class="d">analysis/</span>
+│   │   ├── <span class="f">04-error-analysis-confusion.ipynb</span>
+│   │   └── <span class="f">05-experiment-comparison.ipynb</span>
+│   ├── <span class="d">inference/</span>
+│   │   └── <span class="f">06-inference-generate-submission.ipynb</span>
+│   └── <span class="d">scratch/</span>
+│       └── <span class="f">scratch-test-augmentation-preview.ipynb</span>
+│
+├── <span class="d">src/</span>   <span class="c">(or fas/)</span>
+│   ├── <span class="f">__init__.py</span>
+│   ├── <span class="d">data/</span>
+│   │   ├── <span class="f">dataset.py</span>               <span class="c"># FASDataset(Dataset) — used by all exp notebooks</span>
+│   │   ├── <span class="f">augmentation.py</span>          <span class="c"># get_train_transforms(), get_val_transforms()</span>
+│   │   └── <span class="f">preprocessing.py</span>         <span class="c"># run_face_crop(), split_dataset()</span>
+│   ├── <span class="d">models/</span>
+│   │   ├── <span class="f">efficientnet.py</span>          <span class="c"># FASEfficientNet(nn.Module)</span>
+│   │   └── <span class="f">ensemble.py</span>              <span class="c"># WeightedEnsemble, OOFEnsemble</span>
+│   ├── <span class="d">training/</span>
+│   │   ├── <span class="f">trainer.py</span>               <span class="c"># Lightning module or custom train loop</span>
+│   │   ├── <span class="f">losses.py</span>                <span class="c"># BCE, FocalLoss</span>
+│   │   └── <span class="f">metrics.py</span>               <span class="c"># compute_acer(), compute_apcer()</span>
+│   └── <span class="d">utils/</span>
+│       ├── <span class="f">config.py</span>                <span class="c"># DATA_DIR, MODELS_DIR, SUBMISSION_DIR paths</span>
+│       └── <span class="f">seed.py</span>                  <span class="c"># set_seed(42)</span>
+│
+├── <span class="d">configs/</span>
+│   ├── <span class="f">base.yaml</span>
+│   └── <span class="d">experiments/</span>
+│       ├── <span class="f">exp01_autogluon.yaml</span>
+│       ├── <span class="f">exp02_effnet_b0.yaml</span>
+│       └── <span class="f">exp03_effnet_b4_mixup.yaml</span>
+│
+├── <span class="d">models/</span>  <span class="c">(gitignored)</span>
+│   ├── <span class="d">exp02_effnet_b0/</span>
+│   │   ├── <span class="f">best_val_auc0.934.ckpt</span>
+│   │   └── <span class="f">config_snapshot.yaml</span>
+│   └── <span class="d">exp03_effnet_b4_mixup/</span>
+│       ├── <span class="f">best_val_auc0.951.ckpt</span>
+│       └── <span class="f">config_snapshot.yaml</span>
+│
+└── <span class="d">submissions/</span>
+    ├── <span class="f">sub_exp02_cv0.934_lb0.109.csv</span>
+    └── <span class="f">sub_exp03_cv0.951_lb0.096.csv</span>
+        </pre></div>
+      </div>
+
+      <div style="margin-top:20px">
+        <div class="section-title" style="font-size:15px; margin-bottom:12px; color: var(--accent)">📋 Your experiment_log.md template</div>
+        <div class="tree-block">
+          <div class="tree-header"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>experiment_log.md</span></div>
+          <div class="tree-body"><pre>
+<span class="h"># FAS Competition — Experiment Log</span>
+
+<span class="h">## Active Best: exp03 | CV ACER: 0.049 | LB ACER: 0.096</span>
+
+| ID    | Date       | Model          | Aug         | Epochs | CV ACER | LB ACER | Notes                      |
+|-------|------------|----------------|-------------|--------|---------|---------|----------------------------|
+| exp01 | 2025-03-10 | AutoGluon AutoMM | default   | auto   | 0.142   | 0.189   | Baseline. Fast to run.     |
+| exp02 | 2025-03-18 | EfficientNet-B0| flip+crop   | 25     | 0.091   | 0.109   | First custom PyTorch       |
+| exp03 | 2025-03-28 | EfficientNet-B4| +MixUp      | 30     | 0.049   | 0.096   | ✓ Current best             |
+| exp04 | planned    | Ensemble E2+E3 | -           | -      | -       | -       | OOF blend                  |
+
+<span class="h">## Next to try</span>
+- [ ] Test-Time Augmentation (TTA) on exp03
+- [ ] Freeze backbone for first 5 epochs (gradual unfreezing)
+- [ ] Try CBAM attention on EfficientNet-B4
+          </pre></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <span class="callout-icon">🚀</span>
+      <span><strong>Migration strategy:</strong> Don't try to restructure everything at once. Step 1: create the folder skeleton. Step 2: move raw data to <code>data/raw/</code>. Step 3: move future experiments to <code>notebooks/experiments/</code>. Step 4: extract repeated code blocks into <code>src/</code> as you touch them. Incremental migration is how pros do it — not a big-bang rewrite.</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="margin-top:80px; padding-top:32px; border-top: 1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); text-align:center; line-height:2">
+    Sources: Cookiecutter Data Science (DrivenData), "Organizing Code, Experiments, and Research for Kaggle Competitions" (TDS, 2025),<br>
+    lightning-hydra-template, neptune.ai DL best practices, MLOps Guide (mlops-guide.github.io)<br><br>
+    <span style="color:var(--border2)">── Generated for Darren's FAS Competition Restructure ──</span>
+  </div>
+
+</div>
+</body>
+</html>

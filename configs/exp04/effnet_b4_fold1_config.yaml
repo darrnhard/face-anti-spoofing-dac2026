@@ -1,0 +1,24 @@
+exp_id: exp04
+model_key: effnet_b4
+fold: 1
+best_epoch: 50
+best_f1: 0.882838
+arch_config:
+  timm_name: efficientnet_b4
+  backbone_lr: 0.0001
+  head_lr: 0.001
+  use_llrd: false
+  llrd_factor: null
+  warmup_epochs: 3
+  batch_size: 24
+  img_size: 380
+  epochs: 60
+  freeze_epochs: 5
+  patience: 15
+training:
+  use_cutmix: true
+  warmup_epochs: 3
+  ema_decay: 0.999
+  grad_clip_norm: 1.0
+  loss: focal
+  focal_gamma: 1.0

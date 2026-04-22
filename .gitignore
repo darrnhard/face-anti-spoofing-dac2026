@@ -1,0 +1,59 @@
+# ── Data & Competition Files ─────────────────────────────────────────────────
+data/
+submissions/
+archive/
+
+# ── Model Checkpoints (hosted on HuggingFace) ────────────────────────────────
+models/
+oof/
+
+# ── Binary / Large File Extensions ───────────────────────────────────────────
+*.pth
+*.pt
+*.pkl
+*.ckpt
+*.npy
+*.npz
+*.zip
+*.tar
+*.tar.gz
+*.h5
+*.hdf5
+
+# ── Reports with Embedded Images ─────────────────────────────────────────────
+reports/test_inspection.html
+
+# ── Notebooks ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_meta
+
+# ── nb-exports: EDA image outputs (may contain face images) ──────────────────
+nb-exports/final-export/eda_files/
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# ── Environment & Credentials ────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.remote_config
+
+# ── Claude Code ──────────────────────────────────────────────────────────────
+.claude/
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
